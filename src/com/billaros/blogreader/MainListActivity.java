@@ -8,6 +8,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.app.ListActivity;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -76,14 +79,31 @@ public class MainListActivity extends ListActivity {
 				connection.connect();
 				
 				responseCode = connection.getResponseCode();
+				
 				if (responseCode == HttpURLConnection.HTTP_OK){
 					InputStream inputStream = connection.getInputStream();
 					Reader reader = new InputStreamReader(inputStream);
+					
 					int contentlength = connection.getContentLength();
 					char[] charArray = new char[contentlength];
+					
 					reader.read(charArray);
 					String responseData = new String(charArray);
-					Log.v(TAG, responseData );
+					//Log.v(TAG, responseData );
+					
+					JSONObject jsonResponce = new JSONObject(responseData);
+					String status = jsonResponce.getString("status");
+					Log.v(TAG, status );
+					
+					JSONArray jsonPosts = jsonResponce.getJSONArray("posts");
+					
+					for(int i =0; i<jsonPosts.length(); i++){
+						JSONObject jsonPost = jsonPosts.getJSONObject(i);
+						String title = jsonPost.getString("title");
+						Log.v(TAG,"Post " + i + ": " + title);
+					}
+					
+					
 				}else{
 					Log.i(TAG, "Unsuccesful HTTP Responce Code:" + responseCode);
 				}
