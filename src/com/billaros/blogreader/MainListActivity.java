@@ -1,15 +1,22 @@
 package com.billaros.blogreader;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import android.app.ListActivity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.Toast;
 
 public class MainListActivity extends ListActivity {
 
@@ -22,14 +29,33 @@ public class MainListActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_list);
 		
-		GetBlogPostTask getBlogPostTask = new GetBlogPostTask();
-		getBlogPostTask.execute();
+		if(isNetworkAvailable()){
+			GetBlogPostTask getBlogPostTask = new GetBlogPostTask();
+			getBlogPostTask.execute();
+		}else{
+			Toast.makeText(this, "Network is unavailble!", Toast.LENGTH_LONG).show();
+		}
 		
 		/*Resources resources = getResources();
 		mBlogPostTitles = resources.getStringArray(R.array.android_names);
 		
 		ArrayAdapter <String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mBlogPostTitles);
 		setListAdapter(adapter);*/
+	}
+
+	private boolean isNetworkAvailable() {
+		ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		
+		NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+		
+		boolean isAvailable = false;
+		
+		if(networkInfo != null && networkInfo.isConnected()){
+			isAvailable = true;
+		}
+		
+		return isAvailable;
+		
 	}
 
 	@Override
@@ -50,6 +76,18 @@ public class MainListActivity extends ListActivity {
 				connection.connect();
 				
 				responseCode = connection.getResponseCode();
+				if (responseCode == HttpURLConnection.HTTP_OK){
+					InputStream inputStream = connection.getInputStream();
+					Reader reader = new InputStreamReader(inputStream);
+					int contentlength = connection.getContentLength();
+					char[] charArray = new char[contentlength];
+					reader.read(charArray);
+					String responseData = new String(charArray);
+					Log.v(TAG, responseData );
+				}else{
+					Log.i(TAG, "Unsuccesful HTTP Responce Code:" + responseCode);
+				}
+				
 				Log.i(TAG ,"Code:" + responseCode);
 			}
 			catch(MalformedURLException e){
