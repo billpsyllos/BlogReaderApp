@@ -19,6 +19,8 @@
         <item>Android Beta</item>
         
     </string-array>
+    <string name="title">Ooops!Sorry!</string>
+    <string name="error_message">There was an error getting data from the blog</string>
     
 
 </resources>
