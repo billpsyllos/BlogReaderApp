@@ -239,7 +239,7 @@ int id action_context_bar 0x7f05001d
 int id action_menu_divider 0x7f050016
 int id action_menu_presenter 0x7f050017
 int id action_mode_close_button 0x7f050024
-int id action_settings 0x7f05003c
+int id action_settings 0x7f05003d
 int id activity_chooser_view_content 0x7f050025
 int id always 0x7f05000b
 int id beginning 0x7f050011
@@ -264,6 +264,7 @@ int id middle 0x7f050012
 int id never 0x7f050009
 int id none 0x7f050010
 int id normal 0x7f050000
+int id progressBar1 0x7f05003c
 int id progress_circular 0x7f050018
 int id progress_horizontal 0x7f050019
 int id radio 0x7f05002f
